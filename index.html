@@ -31,25 +31,44 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script>
         new Vue({
-            el: '#app',
-            
-            data: {
-                todo: '',
-                todos: [],
-            },
-            
-            methods: {
-                adicionar() {
-                    this.todos.push(this.todo)
-                    this.todo = ''
-                },
+    el: '#app',
 
-                remover(index) {
-                    this.todos.splice(index, 1)
-                },
-            
+    data: {
+        todo: '',
+        todos: [],
+    },
+
+    mounted() {
+        // recuperar os dados do armazenamento local quando o componente for montado
+        if (localStorage.getItem('todos')) {
+            try {
+                this.todos = JSON.parse(localStorage.getItem('todos'));
+            } catch(e) {
+                localStorage.removeItem('todos');
             }
-        })
+        }
+    },
+
+    methods: {
+        adicionar() {
+            this.todos.push(this.todo)
+            this.todo = ''
+
+            // salvar os dados no armazenamento local após adicionar uma tarefa
+            const parsed = JSON.stringify(this.todos);
+            localStorage.setItem('todos', parsed);
+        },
+
+        remover(index) {
+            this.todos.splice(index, 1)
+
+            // atualizar o armazenamento local após remover uma tarefa
+            const parsed = JSON.stringify(this.todos);
+            localStorage.setItem('todos', parsed);
+        },
+    }
+})
+
     </script>
 </body>
 </html> 
